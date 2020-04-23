@@ -23,6 +23,13 @@ services:
             - api-php-fpm
     api-php-fpm:
         build:
-            context: api/docker/php-fpm
+            context: api/docker
+            dockerfile: php-fpm/Dockerfile
+        volumes:
+            - ./api:/app
+    api-php-cli:
+        build:
+            context: api/docker
+            dockerfile: php-cli/Dockerfile
         volumes:
             - ./api:/app
