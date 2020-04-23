@@ -1,0 +1,16 @@
+{
+    "name": "poymanov/auction",
+    "type": "project",
+    "config": {
+        "process-timeout": 0,
+        "sort-packages": true
+    },
+    "require": {
+        "php": "^7.4",
+        "slim/psr7": "^1.0",
+        "slim/slim": "^4.5"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-master"
+    }
+}
