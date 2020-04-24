@@ -28,5 +28,4 @@ class HelloCommand extends Command
 
         return 0;
     }
-
 }
