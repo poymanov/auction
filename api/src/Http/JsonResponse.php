@@ -12,7 +12,7 @@ use Slim\Psr7\Response;
 class JsonResponse extends Response
 {
     /**
-     * @param $data
+     * @param mixed $data
      * @param int $status
      * @throws JsonException
      */
