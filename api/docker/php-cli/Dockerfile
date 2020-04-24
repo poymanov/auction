@@ -1,5 +1,10 @@
 FROM php:7.4-cli-alpine
 
+RUN apk add --no-cache autoconf g++ make \
+	&& pecl install xdebug \
+	&& rm -rf /tmp/pear \
+	&& docker-php-ext-enable xdebug
+
 RUN apk update && apk add unzip
 
 RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
