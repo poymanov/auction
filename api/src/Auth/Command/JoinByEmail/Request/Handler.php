@@ -76,7 +76,7 @@ class Handler
 
         $date = new DateTimeImmutable();
 
-        $user = new User(
+        $user = User::requestJoinByEmail(
             Id::generate(),
             $date,
             $email,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Auth\Entity\User;
 
+use ArrayObject;
 use DateTimeImmutable;
 use DomainException;
 
@@ -25,9 +26,9 @@ class User
     private Email $email;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private string $passwordHash;
+    private ?string $passwordHash = null;
 
     /**
      * @var Status
@@ -37,28 +38,71 @@ class User
     /**
      * @var Token|null
      */
-    private ?Token $joinConfirmToken;
+    private ?Token $joinConfirmToken = null;
+
+    /**
+     * @var ArrayObject
+     */
+    private ArrayObject $networks;
+
+    /**
+     * @param Id $id
+     * @param DateTimeImmutable $date
+     * @param Email $email
+     * @param Status $status
+     */
+    private function __construct(
+        Id $id,
+        DateTimeImmutable $date,
+        Email $email,
+        Status $status
+    ) {
+        $this->id = $id;
+        $this->date = $date;
+        $this->email = $email;
+        $this->status = $status;
+        $this->networks = new ArrayObject();
+    }
+
+    /**
+     * @param Id $id
+     * @param DateTimeImmutable $date
+     * @param Email $email
+     * @param NetworkIdentity $identity
+     * @return User
+     */
+    public static function joinByNetwork(
+        Id $id,
+        DateTimeImmutable $date,
+        Email $email,
+        NetworkIdentity $identity
+    ): User {
+        $user = new User($id, $date, $email, Status::active());
+        $user->networks->append($identity);
+
+        return $user;
+    }
 
     /**
      * @param Id $id
      * @param DateTimeImmutable $date
      * @param Email $email
      * @param string $passwordHash
-     * @param Token|null $joinConfirmToken
+     * @param Token $joinConfirmToken
+     * @return User
      */
-    public function __construct(
+    public static function requestJoinByEmail(
         Id $id,
         DateTimeImmutable $date,
         Email $email,
         string $passwordHash,
-        ?Token $joinConfirmToken
-    ) {
-        $this->id = $id;
-        $this->date = $date;
-        $this->email = $email;
-        $this->status = Status::wait();
-        $this->passwordHash = $passwordHash;
-        $this->joinConfirmToken = $joinConfirmToken;
+        Token $joinConfirmToken
+    ): User {
+        $user = new User($id, $date, $email, Status::wait());
+        $user->passwordHash = $passwordHash;
+        $user->joinConfirmToken = $joinConfirmToken;
+
+        return $user;
     }
 
     /**
@@ -74,6 +118,20 @@ class User
         $this->joinConfirmToken->validate($token, $date);
         $this->status = Status::active();
         $this->joinConfirmToken = null;
+    }
+
+    /**
+     * @param NetworkIdentity $identity
+     */
+    public function attachNetwork(NetworkIdentity $identity): void
+    {
+        /** @var NetworkIdentity $existing */
+        foreach ($this->networks as $existing) {
+            if ($existing->isEqualTo($identity)) {
+                throw new DomainException('Network is already attached.');
+            }
+        }
+        $this->networks->append($identity);
     }
 
     /**
@@ -117,9 +175,9 @@ class User
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPasswordHash(): string
+    public function getPasswordHash(): ?string
     {
         return $this->passwordHash;
     }
@@ -130,5 +188,13 @@ class User
     public function getJoinConfirmToken(): ?Token
     {
         return $this->joinConfirmToken;
+    }
+
+    /**
+     * @return array
+     */
+    public function getNetworks(): array
+    {
+        return $this->networks->getArrayCopy();
     }
 }
