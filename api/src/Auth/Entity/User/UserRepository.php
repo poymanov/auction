@@ -13,6 +13,12 @@ interface UserRepository
     public function hasByEmail(Email $email): bool;
 
     /**
+     * @param string $token
+     * @return User|null
+     */
+    public function findByJoinConfirmToken(string $token): ?User;
+
+    /**
      * @param User $user
      */
     public function add(User $user): void;
