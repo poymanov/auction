@@ -33,6 +33,12 @@ interface UserRepository
     public function findByPasswordResetToken(string $token): ?User;
 
     /**
+     * @param string $token
+     * @return User|null
+     */
+    public function findByNewEmailToken(string $token): ?User;
+
+    /**
      * @param Id $id
      * @return User
      * @throws DomainException

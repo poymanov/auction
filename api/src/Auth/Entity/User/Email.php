@@ -24,6 +24,15 @@ class Email
     }
 
     /**
+     * @param Email $other
+     * @return bool
+     */
+    public function isEqualTo(Email $other): bool
+    {
+        return $this->value === $other->value;
+    }
+
+    /**
      * @return string
      */
     public function getValue(): string
