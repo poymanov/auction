@@ -62,6 +62,11 @@ class User
     private ?Token $newEmailToken = null;
 
     /**
+     * @var Role
+     */
+    private Role $role;
+
+    /**
      * @param Id $id
      * @param DateTimeImmutable $date
      * @param Email $email
@@ -77,6 +82,7 @@ class User
         $this->date = $date;
         $this->email = $email;
         $this->status = $status;
+        $this->role = Role::user();
         $this->networks = new ArrayObject();
     }
 
@@ -237,6 +243,14 @@ class User
     }
 
     /**
+     * @param Role $role
+     */
+    public function changeRole(Role $role): void
+    {
+        $this->role = $role;
+    }
+
+    /**
      * @return bool
      */
     public function isWait(): bool
@@ -274,6 +288,14 @@ class User
     public function getEmail(): Email
     {
         return $this->email;
+    }
+
+    /**
+     * @return Role
+     */
+    public function getRole(): Role
+    {
+        return $this->role;
     }
 
     /**
