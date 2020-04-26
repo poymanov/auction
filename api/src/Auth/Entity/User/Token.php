@@ -43,6 +43,15 @@ class Token
     }
 
     /**
+     * @param DateTimeImmutable $date
+     * @return bool
+     */
+    public function isExpiredTo(DateTimeImmutable $date): bool
+    {
+        return $this->expires <= $date;
+    }
+
+    /**
      * @param string $value
      * @return bool
      */
@@ -65,14 +74,5 @@ class Token
     public function getExpires(): DateTimeImmutable
     {
         return $this->expires;
-    }
-
-    /**
-     * @param DateTimeImmutable $date
-     * @return bool
-     */
-    private function isExpiredTo(DateTimeImmutable $date): bool
-    {
-        return $this->expires <= $date;
     }
 }

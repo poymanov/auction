@@ -46,6 +46,11 @@ class User
     private ArrayObject $networks;
 
     /**
+     * @var Token|null
+     */
+    private ?Token $passwordResetToken = null;
+
+    /**
      * @param Id $id
      * @param DateTimeImmutable $date
      * @param Email $email
@@ -135,6 +140,39 @@ class User
     }
 
     /**
+     * @param Token $token
+     * @param DateTimeImmutable $date
+     */
+    public function requestPasswordReset(Token $token, DateTimeImmutable $date): void
+    {
+        if (!$this->isActive()) {
+            throw new DomainException('User is not active.');
+        }
+
+        if ($this->passwordResetToken !== null && !$this->passwordResetToken->isExpiredTo($date)) {
+            throw new DomainException('Resetting is already requested.');
+        }
+
+        $this->passwordResetToken = $token;
+    }
+
+    /**
+     * @param string $token
+     * @param DateTimeImmutable $date
+     * @param string $hash
+     */
+    public function resetPassword(string $token, DateTimeImmutable $date, string $hash): void
+    {
+        if ($this->passwordResetToken === null) {
+            throw new DomainException('Resetting is not requested.');
+        }
+
+        $this->passwordResetToken->validate($token, $date);
+        $this->passwordResetToken = null;
+        $this->passwordHash = $hash;
+    }
+
+    /**
      * @return bool
      */
     public function isWait(): bool
@@ -188,6 +226,14 @@ class User
     public function getJoinConfirmToken(): ?Token
     {
         return $this->joinConfirmToken;
+    }
+
+    /**
+     * @return Token|null
+     */
+    public function getPasswordResetToken(): ?Token
+    {
+        return $this->passwordResetToken;
     }
 
     /**

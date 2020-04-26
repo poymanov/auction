@@ -27,11 +27,24 @@ interface UserRepository
     public function findByJoinConfirmToken(string $token): ?User;
 
     /**
+     * @param string $token
+     * @return User|null
+     */
+    public function findByPasswordResetToken(string $token): ?User;
+
+    /**
      * @param Id $id
      * @return User
      * @throws DomainException
      */
     public function get(Id $id): User;
+
+    /**
+     * @param Email $email
+     * @return User
+     * @throws DomainException
+     */
+    public function getByEmail(Email $email): User;
 
     /**
      * @param User $user
