@@ -4,49 +4,55 @@ declare(strict_types=1);
 
 namespace App\Auth\Entity\User;
 
+use Doctrine\ORM\Mapping as ORM;
 use Webmozart\Assert\Assert;
 
-class NetworkIdentity
+/**
+ * @ORM\Embeddable
+ */
+class Network
 {
     /**
+     * @ORM\Column(type="string", length=16)
      * @var string
      */
-    private string $network;
+    private string $name;
 
     /**
+     * @ORM\Column(type="string", length=16)
      * @var string
      */
     private string $identity;
 
     /**
-     * @param string $network
+     * @param string $name
      * @param string $identity
      */
-    public function __construct(string $network, string $identity)
+    public function __construct(string $name, string $identity)
     {
-        Assert::notEmpty($network);
+        Assert::notEmpty($name);
         Assert::notEmpty($identity);
-        $this->network = $network;
+        $this->name = $name;
         $this->identity = $identity;
     }
 
     /**
-     * @param NetworkIdentity $network
+     * @param Network $network
      * @return bool
      */
     public function isEqualTo(self $network): bool
     {
         return
-            $this->getNetwork() === $network->getNetwork() &&
+            $this->getName() === $network->getName() &&
             $this->getIdentity() === $network->getIdentity();
     }
 
     /**
      * @return string
      */
-    public function getNetwork(): string
+    public function getName(): string
     {
-        return $this->network;
+        return $this->name;
     }
 
     /**
