@@ -17,5 +17,5 @@ return [
         $repo = $em->getRepository(User::class);
 
         return new UserRepository($em, $repo);
-    }
+    },
 ];

@@ -10,12 +10,15 @@
         "ext-json": "^7.4",
         "doctrine/migrations": "^2.2",
         "doctrine/orm": "^2.7",
+        "finesse/swiftmailer-defaults-plugin": "^2.0",
         "laminas/laminas-config-aggregator": "^1.2",
         "php-di/php-di": "^6.1",
         "ramsey/uuid": "^4.0",
         "slim/psr7": "^1.0",
         "slim/slim": "^4.5",
+        "swiftmailer/swiftmailer": "^6.2",
         "symfony/console": "^5.0",
+        "twig/twig": "^3.0",
         "webmozart/assert": "^1.8"
     },
     "require-dev": {
