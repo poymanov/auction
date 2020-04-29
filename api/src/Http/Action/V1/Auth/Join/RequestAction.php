@@ -7,10 +7,15 @@ namespace App\Http\Action\V1\Auth\Join;
 use App\Auth\Command\JoinByEmail\Request\Command;
 use App\Auth\Command\JoinByEmail\Request\Handler;
 use App\Http\EmptyResponse;
+use App\Http\JsonResponse;
+use App\Http\Validator\ValidationException;
+use App\Http\Validator\Validator;
 use JsonException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RequestAction implements RequestHandlerInterface
 {
@@ -20,11 +25,18 @@ class RequestAction implements RequestHandlerInterface
     private Handler $handler;
 
     /**
-     * @param Handler $handler
+     * @var Validator
      */
-    public function __construct(Handler $handler)
+    private Validator $validator;
+
+    /**
+     * @param Handler $handler
+     * @param Validator $validator
+     */
+    public function __construct(Handler $handler, Validator $validator)
     {
         $this->handler = $handler;
+        $this->validator = $validator;
     }
 
     /**
@@ -42,6 +54,8 @@ class RequestAction implements RequestHandlerInterface
         $command = new Command();
         $command->email = $data['email'] ?? '';
         $command->password = $data['password'] ?? '';
+
+        $this->validator->validate($command);
 
         $this->handler->handle($command);
 
