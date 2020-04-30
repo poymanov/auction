@@ -12,6 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DomainExceptionHandler implements MiddlewareInterface
 {
@@ -21,11 +22,18 @@ class DomainExceptionHandler implements MiddlewareInterface
     private LoggerInterface $logger;
 
     /**
-     * @param LoggerInterface $logger
+     * @var TranslatorInterface
      */
-    public function __construct(LoggerInterface $logger)
+    private TranslatorInterface $translator;
+
+    /**
+     * @param LoggerInterface $logger
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(LoggerInterface $logger, TranslatorInterface $translator)
     {
         $this->logger = $logger;
+        $this->translator = $translator;
     }
 
     /**
@@ -44,7 +52,7 @@ class DomainExceptionHandler implements MiddlewareInterface
                 'url' => (string)$request->getUri()
             ]);
             return new JsonResponse([
-                'message' => $exception->getMessage()
+                'message' => $this->translator->trans($exception->getMessage(), [], 'exceptions')
             ], 409);
         }
     }
