@@ -1,11 +1,11 @@
 export function unregister() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready
-      .then(registration => {
-        registration.unregister();
+      .then((registration) => {
+        registration.unregister()
       })
-      .catch(error => {
-        console.error(error.message);
-      });
+      .catch((error) => {
+        console.error(error.message)
+      })
   }
 }
