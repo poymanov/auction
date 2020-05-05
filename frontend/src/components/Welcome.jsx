@@ -3,7 +3,7 @@ import styles from './Welcome.module.css'
 
 function Welcome() {
   return (
-    <div className={styles.welcome}>
+    <div data-test="welcome" className={styles.welcome}>
       <h1>Auction</h1>
       <p>We will he here soon</p>
     </div>
